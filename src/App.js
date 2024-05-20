@@ -1,116 +1,9 @@
 import "./index.css";
 import { useState } from "react";
-
-function Logo() {
-  return <h1>😎🌴 Far Away ✈ 😎</h1>;
-}
-
-function Form({ onAddItem, curItem }) {
-  const [description, setDescription] = useState(
-    curItem.description ? curItem.description : ""
-  );
-  const [qty, setQty] = useState(curItem.qty ? curItem.qty : 1);
-
-  function handleSubmit(evt) {
-    evt.preventDefault();
-
-    if (!description) return; // wenn man keine Description angegeben hat, passiert nix ...
-
-    const newItem = { description, qty, packed: false, id: Date.now() };
-    onAddItem(newItem);
-
-    setDescription("");
-    setQty(1);
-  }
-
-  console.log("Form curItem=", curItem);
-  console.log(`  qty=${qty}, description='${description}'`);
-  return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      <h3>What do you need for your trip?</h3>
-      <select value={qty} onChange={(e) => setQty(Number(e.target.value))}>
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-          <option value={num} key={num}>
-            {num}
-          </option>
-        ))}
-      </select>
-      <input
-        type="text"
-        placeholder="Item ..."
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <button>Add</button>
-    </form>
-  );
-}
-
-function PackingList({ items, onDeleteItem, onPackedChange, onItemClicked }) {
-  const [sortBy, setSortBy] = useState("input");
-  return (
-    <div className="list">
-      <ul>
-        {items.map((item) => (
-          <Item
-            item={item}
-            key={item.id}
-            onDeleteItem={onDeleteItem}
-            onPackedChange={onPackedChange}
-            onItemClicked={onItemClicked}
-          />
-        ))}
-      </ul>
-      <div className="actions">
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <option value="input">Sort by input order</option>
-          <option value="description">Sort by description</option>
-          <option value="packed">Sort by packed status</option>
-        </select>
-      </div>
-    </div>
-  );
-}
-
-function Item({ item, onDeleteItem, onPackedChange, onItemClicked }) {
-  return (
-    <li>
-      <input
-        type="checkbox"
-        checked={item.packed}
-        onChange={() => onPackedChange(item.id)}
-      />{" "}
-      <span
-        style={item.packed ? { textDecoration: "line-through" } : {}}
-        onClick={() => onItemClicked(item.id)}
-      >
-        {item.qty} {item.description}
-      </span>
-      <button onClick={() => onDeleteItem(item.id)}>❌</button>
-    </li>
-  );
-}
-
-function Stats({ items }) {
-  if (!items.length)
-    return (
-      <footer className="stats">
-        Start adding some items to your packing list ...
-      </footer>
-    );
-
-  const numItems = items.length;
-  const packedItemsCnt = items.filter((el) => el.packed).length;
-  const packedPercent =
-    numItems > 0 ? Math.round((packedItemsCnt / numItems) * 100) : "";
-  return (
-    <footer className="stats">
-      {numItems === packedItemsCnt
-        ? "You got everything! Ready to go ✈"
-        : `🧳 You have ${numItems} items on your list and you already packed ${packedItemsCnt} (${packedPercent}%)`}
-    </footer>
-  );
-}
+import Logo from "./Logo";
+import Form from "./Form";
+import PackingList from "./PackingList";
+import Stats from "./Stats";
 
 export default function App() {
   const [items, setItems] = useState([]);
@@ -131,6 +24,15 @@ export default function App() {
         return { ...e, packed: !e.packed };
       })
     );
+  }
+  function handleClearItems() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete all items?"
+    );
+    if (confirmed) {
+      setItems([]);
+      setCurItem({ qty: null, description: null });
+    }
   }
 
   function handleItemClicked(id) {
@@ -154,6 +56,7 @@ export default function App() {
         onDeleteItem={handleDeleteItem}
         onPackedChange={handlePackedChange}
         onItemClicked={handleItemClicked}
+        onClearItems={handleClearItems}
       />
       <Stats items={items} />
     </div>
