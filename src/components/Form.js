@@ -21,22 +21,39 @@ export default function Form({ onAddItem, curItem }) {
   console.log("Form curItem=", curItem);
   console.log(`  qty=${qty}, description='${description}'`);
   return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      <h3>What do you need for your trip?</h3>
-      <select value={qty} onChange={(e) => setQty(Number(e.target.value))}>
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-          <option value={num} key={num}>
-            {num}
-          </option>
-        ))}
-      </select>
-      <input
-        type="text"
-        placeholder="Item ..."
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <button>Add</button>
-    </form>
+    <>
+      <form className="add-form" onSubmit={handleSubmit}>
+        <h3>What do you need for your trip?</h3>
+        <select value={qty} onChange={(e) => setQty(Number(e.target.value))}>
+          {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+            <option value={num} key={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+        <input
+          type="text"
+          placeholder="Item ..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <button>Add</button>
+      </form>
+      <div className="info">
+        <p>
+          state= <input value={qty} name="stateQty" />
+          <input value={description} name="stateDesc" />
+        </p>
+      </div>
+      <div className="info">
+        <p>
+          <input value={curItem.qty ? curItem.qty : -1} name="curItemQty" />
+          <input
+            value={curItem.description ? curItem.description : "UNKNOWN"}
+            name="curItemDescription"
+          />
+        </p>
+      </div>
+    </>
   );
 }

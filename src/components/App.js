@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Logo from "./Logo";
 import Form from "./Form";
+import FormChildren from "./FormChildren";
 import PackingList from "./PackingList";
 import Stats from "./Stats";
 
@@ -35,13 +36,13 @@ export default function App() {
   }
 
   function handleItemClicked(id) {
-    return; // doesn't work right now, so do nothing ...
+    //return; // doesn't work right now, so do nothing ...
     const curItemObj = items.filter((el) => el.id === id);
     if (curItemObj.length === 1) {
       // nur zur Sicherheit, kann eigentlich nix anderes sein ...
       setCurItem(curItemObj[0]);
       console.log("curItemObj=", curItemObj[0]);
-      handleDeleteItem(id);
+      //      handleDeleteItem(id);
     }
   }
 
@@ -49,7 +50,9 @@ export default function App() {
   return (
     <div className="App">
       <Logo />
-      <Form onAddItem={handleAddItem} curItem={curItem} />
+      <Form onAddItem={handleAddItem} curItem={curItem}>
+        {JSON.stringify(curItem)}
+      </Form>
       <PackingList
         items={items}
         onDeleteItem={handleDeleteItem}
